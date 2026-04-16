@@ -4,6 +4,8 @@ const { app } = require("./app");
 const { connectToDatabase } = require("./config/db");
 const { env } = require("./config/env");
 
+console.log("ENV MONGO_URI:", process.env.MONGO_URI);
+
 const startServer = async () => {
   if (!env.mongoUri) {
     throw new Error("MONGO_URI is missing. Add it to backend/.env before starting the server.");

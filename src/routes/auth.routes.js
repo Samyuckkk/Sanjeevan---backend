@@ -89,6 +89,17 @@ router.patch(
   authController.updateProfile
 );
 router.post(
+  "/rewards/grant",
+  [
+    body("email").isEmail().withMessage("Please enter a valid email"),
+    body("points")
+      .isInt({ min: 1 })
+      .withMessage("Reward points must be a positive whole number"),
+  ],
+  validate,
+  authController.rewardUserByEmail
+);
+router.post(
   "/allergies",
   requireAuth,
   [

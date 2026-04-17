@@ -305,6 +305,33 @@ const updateProfile = async (userId, { name, phoneNumber = "" }) => {
   };
 };
 
+const rewardUserByEmail = async ({ email, points }) => {
+  const normalizedEmail = email.trim().toLowerCase();
+  const rewardAmount = Number(points);
+
+  if (!Number.isFinite(rewardAmount) || rewardAmount <= 0) {
+    throw { statusCode: 400, message: "Reward points must be a positive number" };
+  }
+
+  const user = await User.findOneAndUpdate(
+    { email: normalizedEmail },
+    { $inc: { rewardPoints: rewardAmount } },
+    { new: true }
+  );
+
+  if (!user) {
+    throw { statusCode: 404, message: "User not found" };
+  }
+
+  return {
+    message: `${rewardAmount} reward points added successfully`,
+    user: sanitizeUser(user),
+    rewardedEmail: normalizedEmail,
+    addedPoints: rewardAmount,
+    totalRewardPoints: user.rewardPoints,
+  };
+};
+
 module.exports = {
   register,
   login,
@@ -319,4 +346,5 @@ module.exports = {
   addAppointment,
   updateAppointment,
   updateProfile,
+  rewardUserByEmail,
 };
